@@ -1,0 +1,18 @@
+::@echo off
+echo ffmpeg-mini-gui
+echo -------------------
+echo.
+
+set input=*video*
+set bitrate=*bitrate*
+set preset=*preset*
+set output=*output*
+set filters=*filters*
+set ffmpeg=*curr*\ffmpeg.exe
+
+%ffmpeg% -i "%input%"%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -acodec copy -q:v 0 -q:a 0 "%output%"
+
+@echo.
+@echo when no errors - destination video saved to %output%
+@echo.
+pause
