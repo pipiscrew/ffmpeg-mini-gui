@@ -1,0 +1,1 @@
+-i "%input%"%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -pass 2 -acodec copy -q:v 0 -q:a 0 "%output%"

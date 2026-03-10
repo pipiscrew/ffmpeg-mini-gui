@@ -61,19 +61,63 @@ namespace ffmpeg_mini_gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to echo ffmpeg-mini-gui
+        ///   Looks up a localized string similar to -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -acodec copy -q:v 0 -q:a 0 &quot;%output%&quot;.
+        /// </summary>
+        internal static string directEXE_onepassARGS {
+            get {
+                return ResourceManager.GetString("directEXE_onepassARGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to -y -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -pass 1 -an -f mp4 NUL.
+        /// </summary>
+        internal static string directEXE_twopassARGSpass1 {
+            get {
+                return ResourceManager.GetString("directEXE_twopassARGSpass1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -pass 2 -acodec copy -q:v 0 -q:a 0 &quot;%output%&quot;.
+        /// </summary>
+        internal static string directEXE_twopassARGSpass2 {
+            get {
+                return ResourceManager.GetString("directEXE_twopassARGSpass2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap down32 {
+            get {
+                object obj = ResourceManager.GetObject("down32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
         ///echo -------------------
         ///echo.
         ///
         ///set input=*video*
-        ///set subtitle=*sub*
         ///set bitrate=*bitrate*
         ///set preset=*preset*
         ///set output=*output*
+        ///set filters=*filters*
+        ///set ffmpeg=*curr*\ffmpeg.exe
         ///
-        ///ffmpeg -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -acodec copy -q:v 0 -q:a 0 &quot;%output%&quot;
+        ///%ffmpeg% -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -acodec copy &quot;%output%&quot;
         ///
-        ///pause.
+        ///@echo.
+        ///@echo when no errors - destination video saved to %output%
+        ///@echo.
+        ///::pause
+        ///timeout /t 10
+        ///exit.
         /// </summary>
         internal static string onepassCMD {
             get {
@@ -82,22 +126,40 @@ namespace ffmpeg_mini_gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to echo ffmpeg-mini-gui
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
         ///echo -------------------
         ///echo.
         ///
         ///set input=*video*
-        ///set subtitle=*sub*
         ///set bitrate=*bitrate*
         ///set preset=*preset*
         ///set output=*output*
+        ///set filters=*filters*
+        ///set ffmpeg=*curr*\ffmpeg.exe
         ///
-        ///ffmpeg -y -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -pass 1 -an -f mp4 NUL
-        ///ffmpeg -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -pass 2 -acodec copy -q:v 0 -q:a 0 &quot;%outpu [rest of string was truncated]&quot;;.
+        ///%ffmpeg% -y -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -pass 1 -an -f mp4 NUL
+        ///%ffmpeg% -i &quot;%input%&quot;%filters%-b:v %bitrate% -preset %preset% -vcodec libx264 -pass 2 -acodec copy &quot;%output%&quot;
+        ///
+        ///@echo.
+        ///@echo when no errors - destination video saved to %output%
+        ///@echo.
+        ///::pause
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string twopassCMD {
             get {
                 return ResourceManager.GetString("twopassCMD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap up32 {
+            get {
+                object obj = ResourceManager.GetObject("up32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

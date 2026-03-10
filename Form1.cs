@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ffmpeg_mini_gui
@@ -21,30 +13,35 @@ namespace ffmpeg_mini_gui
             this.Text = Application.ProductName + " v" + Application.ProductVersion;
 
             cmbPreset.SelectedIndex = 2;
+            progressBar.Maximum = 0;
             TextBoxWatermarkExtensionMethod.SetWatermark(txtScale, "854");
             TextBoxWatermarkExtensionMethod.SetWatermark(txtFPS, "4");
         }
 
-        #region TextBox DragDrop
+        #region " TextBox DragDrop "
+
         private void textBox1_DragDrop(object sender, DragEventArgs e)
         {
-            string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            string[] filelist = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            if (FileList[0].ToLower().EndsWith(".mp4") || FileList[0].ToLower().EndsWith(".mkv"))
+            if (filelist[0].ToLower().EndsWith(".mp4") || filelist[0].ToLower().EndsWith(".mkv"))
             {
-                txtVideo.Text = FileList[0];
-                Scroll2END(txtVideo);
+                txtVideo.Text = filelist[0];
+                General.Scroll2END(txtVideo);
             }
         }
 
         private void textBox2_DragDrop(object sender, DragEventArgs e)
         {
-            string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
-            if (FileList[0].ToLower().EndsWith(".srt"))
+            if (!txtVideo.Text.Contains("*"))
             {
-                txtSubtitle.Text = FileList[0];
-                Scroll2END(txtSubtitle);
+                string[] filelist = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+                if (filelist[0].ToLower().EndsWith(".srt"))
+                {
+                    txtSubtitle.Text = filelist[0];
+                    General.Scroll2END(txtSubtitle);
+                }
             }
         }
 
@@ -61,175 +58,188 @@ namespace ffmpeg_mini_gui
         {
             (sender as TextBox).Text = string.Empty;
         }
+
         #endregion
 
-        private void btn_Click(object sender, EventArgs e)
+        private async void btn_Click(object sender, EventArgs e)
         {
+
             if (!File.Exists(Application.StartupPath + "\\ffmpeg.exe"))
             {
-                Mes("ffmpeg.exe must be near this application. download at :\r\n\r\nhttps://www.ffmpeg.org/download.html");
+                General.Mes("ffmpeg.exe must be near this application. download at :\r\n\r\nhttps://www.ffmpeg.org/download.html");
                 return;
             }
 
-            if (!File.Exists(txtVideo.Text))
+            // * = multi video harsub   | = combine videos
+            string[] multiFiles = txtVideo.Text.Split(new char[] { '*' });
+
+            string combineVideoFolder = string.Empty;
+
+            //get what process type to follow
+            General.ProcessType actionType = General.FindKindOfAction(txtVideo.Text);
+
+            if (actionType == General.ProcessType.combine)
             {
-                Mes("Video file doesnt exist");
-                return;
+                combineVideoFolder = btnCombine.Tag.ToString();
+
+                if (!General.CheckFilesForCombine(combineVideoFolder, txtVideo.Text))
+                    return;
+                else
+                    multiFiles[0] = "concat:" + multiFiles[0];
+            }
+            else
+            {
+                if (multiFiles.Count() == 1 && !File.Exists(txtVideo.Text))
+                {
+                    General.Mes("Video file doesnt exist.");
+                    return;
+                }
+                else if (multiFiles.Count() == 1 && File.Exists(txtSubtitle.Text))
+                {
+                    if (!General.IsFileUtf8(General.GetSubtitleFilePathByVideo(txtSubtitle.Text)))
+                    {
+                        General.Mes("Subtitle file is not UTF8 (required by ffmpeg).", MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else if (multiFiles.Count() > 1 && actionType == General.ProcessType.multiHardSub && !General.ValidateMultiFiles(multiFiles))
+                {
+                    return;
+                }
             }
 
             txtBitrate.Text = txtBitrate.Text.Trim();
             if (txtBitrate.Text.Length == 0)
             {
-                Mes("bitrate required!");
+                General.Mes("bitrate required!");
                 return;
             }
-            
-            //if (!File.Exists(txtSubtitle.Text))
-            //{
-            //    Mes("Subtitle file doesnt exist");
-            //    return;
-            //}
 
-            string subtitleFix = GetSubtitlePath(txtSubtitle.Text);
-            string scaleFix = GetScaledBounds(txtScale.Text);
-            string fpsFix = GetFPSfix(txtFPS.Text);
+            //ffmpeg config
+            string timeCut = General.TimeCutOutput(txtStartTime.MaskFull, txtEndTime.MaskFull, txtStartTime.Text, txtEndTime.Text);
+            if (timeCut == null)
+                return;
+            //ffmpeg config 
 
-            string filters = ConstructFinalFilters(subtitleFix, scaleFix, fpsFix);
+            progressBar.Maximum = multiFiles.Count();
+            progressBar.Value = 0;
+            //progressBar.Text = "0 / " + multiFiles.Count();
+            General.EnableControls(this.Controls, false);
+            for (int i = 0; i < multiFiles.Count(); i++)
+            {
+                string subtitleFix = General.GetSubtitlePath(multiFiles.Count() == 1 ? txtSubtitle.Text : General.GetSubtitleFilePathByVideo(multiFiles[i]));
+                string scaleFix = General.GetScaledBounds(txtScale.Text);
+                string fpsFix = General.GetFPSfix(txtFPS.Text);
+                string filters = General.ConstructFinalFilters(subtitleFix, scaleFix, fpsFix);
 
-            string template = string.Empty;
+                string template = string.Empty;
 
-            if (chkTwoPass.Checked)
-                template = ffmpeg_mini_gui.Properties.Resources.twopassCMD;
-            else
-                template = ffmpeg_mini_gui.Properties.Resources.onepassCMD;
+                if (chkTwoPass.Checked)
+                    template = ffmpeg_mini_gui.Properties.Resources.twopassCMD;
+                else
+                    template = ffmpeg_mini_gui.Properties.Resources.onepassCMD;
 
-            template = template.Replace("*video*", txtVideo.Text).Replace("*sub*", subtitleFix).Replace("*bitrate*", txtBitrate.Text).Replace("*preset*", cmbPreset.Text).Replace("*output*", txtVideo.Text + "-output.mp4").Replace("*curr*", Application.StartupPath).Replace("*filters*", filters);
+                //output filepath
+                string outputFilename = string.Empty;
+                if ((actionType != General.ProcessType.combine) && (multiFiles.Count() == 1 && File.Exists(txtSubtitle.Text)) || multiFiles.Count() > 1)
+                    outputFilename = General.GetOutputFilenameForHardSubbed(multiFiles[i]);
+                else if (actionType == General.ProcessType.combine)
+                {
+                    outputFilename = General.GetOutputFilenameForCombine(combineVideoFolder, multiFiles[i]);
+                    multiFiles[i] =  multiFiles[i].Replace("\\","/");
+                }
+                else  // when is one VIDEO without subs
+                    outputFilename = General.GetOutputFilename(multiFiles[i]);
 
-            string tmp = Path.GetTempFileName() + ".bat";
+                template = template.Replace("*video*", multiFiles[i]).Replace("*bitrate*", txtBitrate.Text).Replace("*preset*", cmbPreset.Text)
+                            .Replace("*output*", outputFilename).Replace("*curr*", Application.StartupPath).Replace("*filters*", filters)
+                            .Replace("%timecut%", timeCut);
 
-            File.WriteAllText(tmp, template);
 
-            ExecuteBatchFile(tmp);
+                string tmp = Path.GetTempFileName() + ".bat";
+
+                if (actionType == General.ProcessType.combine)
+                    tmp = string.Format("{0}action{1}.bat", combineVideoFolder, General.GetNow());
+
+                File.WriteAllText(tmp, template);
+
+                await General.ExecuteBatchFile(tmp);
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // DIRECT EXECUTION OF ffmpeg.exe AND GRAB THE OUTPUT [working but abandoned due difficult usability by end user]
+                //string args1 = string.Empty;
+                //string args2 = string.Empty;
+
+                //if (chkTwoPass.Checked)
+                //{
+                //    args1 = ffmpeg_mini_gui.Properties.Resources.directEXE_twopassARGSpass1;
+                //    args2 = ffmpeg_mini_gui.Properties.Resources.directEXE_twopassARGSpass2;
+                //}
+                //else
+                //    args1 = ffmpeg_mini_gui.Properties.Resources.directEXE_onepassARGS;
+
+                //args1 = args1.Replace("%input%", multiFiles[i]).Replace("%bitrate%", txtBitrate.Text).Replace("%preset%", cmbPreset.Text).Replace("%output%", outputFilename).Replace("%curr%", Application.StartupPath).Replace("%filters%", filters);
+                //args2 = args2.Replace("%input%", multiFiles[i]).Replace("%bitrate%", txtBitrate.Text).Replace("%preset%", cmbPreset.Text).Replace("%output%", outputFilename).Replace("%curr%", Application.StartupPath).Replace("%filters%", filters);
+
+                //if (chkTwoPass.Checked)
+                //{
+                //    await General.ExecuteTestExecutable(args1);
+                //    await General.ExecuteTestExecutable(args2);
+                //}
+                //else
+                //    await General.ExecuteTestExecutable(args1);
+
+                progressBar.Value++;
+                // windows progressbar - progressBar.Value = ((i + 1) * 100) / multiFiles.Count();
+                // TextProgressBar (versus  .Value above) - progressBar.Text = (i + 1).ToString() + " / " + multiFiles.Count().ToString();
+            }
+            General.EnableControls(this.Controls, true);
         }
 
- 
-
-        private static string ConstructFinalFilters(string subs, string scale, string fps)
+        private void btnMulti_Click(object sender, EventArgs e)
         {
-            string final = string.Empty;
+            string val = null;
 
-            if (subs != null)
-                final = subs;
-
-            if (scale != null)
+            frmMultiHardSub x = new frmMultiHardSub();
+            if (x.ShowDialog(out val) == System.Windows.Forms.DialogResult.OK)
             {
-                if (final.Length > 0)
-                    final += ",";
-
-                final += scale;
+                txtVideo.Text = val;
+                txtSubtitle.Text = string.Empty;
             }
 
-            if (fps != null)
-            {
-                if (final.Length > 0)
-                    final += ",";
+        }
 
-                final += fps;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            frmMultiSub x = new frmMultiSub();
+            x.ShowDialog();
+        }
+
+        private void btnCombine_Click(object sender, EventArgs e)
+        {
+            string val = null;
+            string videosWorkingFolder = null;
+
+            frmCombine x = new frmCombine();
+            if (x.ShowDialog(out val, out videosWorkingFolder) == System.Windows.Forms.DialogResult.OK)
+            {
+                txtVideo.Text = val;
+                txtSubtitle.Text = string.Empty;
+                btnCombine.Tag = videosWorkingFolder + Path.DirectorySeparatorChar;
             }
 
-            if (final == string.Empty)
-                return " ";
-            else 
-                return string.Format(" -vf \"{0}\" ", final);
         }
 
-        private string GetFPSfix(string p)
+        private void lblStartTime_Click(object sender, EventArgs e)
         {
-            if (p.Length == 0)
-                return null;
-
-            return string.Format("fps={0}", p);
+            txtStartTime.Text = "";
         }
 
-        private string GetScaledBounds(string p)
+        private void lblEndTime_Click(object sender, EventArgs e)
         {
-            if (p.Length == 0)
-                return null;
-
-            return string.Format("scale={0}:-1", p);
+            txtEndTime.Text = "";
         }
-
-        private static string GetSubtitlePath(string p)
-        {
-            if (string.IsNullOrEmpty(p))
-                return null;
-
-            string formattedPath = p.Replace("\\", "\\\\");
-
-            if (formattedPath.Length > 1 && formattedPath[1] == ':')
-            {
-                formattedPath = formattedPath[0] + "\\:" + formattedPath.Substring(2);
-            }
-
-            return string.Format("subtitles='{0}':force_style='FontName=Arial,FontSize=24'", formattedPath);
-        }
-
-
-        private static void ExecuteBatchFile(string batchFilePath)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = "/c start \"\" \"" + batchFilePath + "\"",
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = false,
-                RedirectStandardError = false
-            };
-
-            Process process = new Process
-            {
-                StartInfo = startInfo
-            };
-
-            process.Start();
-        }
-
-
-        public static DialogResult Mes(string descr, MessageBoxIcon icon = MessageBoxIcon.Information, MessageBoxButtons butt = MessageBoxButtons.OK)
-        {
-            if (descr.Length > 0)
-                return MessageBox.Show(descr, Application.ProductName, butt, icon);
-            else
-                return DialogResult.OK;
-
-        }
-
-        private void Scroll2END(TextBox txtSQL)
-        {
-            txtSQL.SelectionStart = txtSQL.Text.Length;
-            txtSQL.ScrollToCaret();
-            txtSQL.Refresh();
-        }
-
-
-
-
     }
 
 
-    public static class TextBoxWatermarkExtensionMethod
-    {
-        // Fields
-        private const uint ECM_FIRST = 0x1500;
-        private const uint EM_SETCUEBANNER = 0x1501;
-
-        // Methods
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, uint wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
-        public static void SetWatermark(this TextBox textBox, string watermarkText)
-        {
-            SendMessage(textBox.Handle, 0x1501, 0, watermarkText);
-        }
-    }
 }

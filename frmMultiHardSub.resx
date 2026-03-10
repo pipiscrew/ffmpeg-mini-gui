@@ -117,26 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="directEXE_onepassARGS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\directEXE_onepassARGS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1253</value>
-  </data>
-  <data name="directEXE_twopassARGSpass1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\directEXE_twopassARGSpass1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1253</value>
-  </data>
-  <data name="onepassCMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\onepassCMD.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1253</value>
-  </data>
-  <data name="directEXE_twopassARGSpass2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\directEXE_twopassARGSpass2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1253</value>
-  </data>
-  <data name="twopassCMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\twopassCMD.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1253</value>
-  </data>
-  <data name="up32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\up32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="down32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\down32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>
