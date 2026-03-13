@@ -1,0 +1,16 @@
+::@echo off
+echo ffmpeg-mini-gui
+echo -------------------
+echo.
+
+::Change code page to Unicode
+chcp 65001
+
+{ffmpeg} {refer} -i "{url}" -c copy "{output}.mp4"
+
+
+@echo.
+@echo when no errors - destination video saved to {output}
+@echo.
+pause
+exit

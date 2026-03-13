@@ -1,0 +1,12 @@
+::@echo off
+echo ffmpeg-mini-gui
+echo -------------------
+echo.
+
+::Change code page to Unicode
+chcp 65001
+
+{command}
+
+pause
+::exit

@@ -61,19 +61,81 @@ namespace ffmpeg_mini_gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to echo ffmpeg-mini-gui
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
         ///echo -------------------
         ///echo.
         ///
-        ///set input=*video*
-        ///set subtitle=*sub*
+        ///::Change code page to Unicode
+        ///chcp 65001
+        ///
+        ///{command}
+        ///
+        ///pause.
+        /// </summary>
+        internal static string cmd_universal {
+            get {
+                return ResourceManager.GetString("cmd_universal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap down32 {
+            get {
+                object obj = ResourceManager.GetObject("down32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
+        ///echo -------------------
+        ///echo.
+        ///
+        ///::Change code page to Unicode
+        ///chcp 65001
+        ///
+        ///{ffmpeg} {refer} -i &quot;{url}&quot; -c copy &quot;{output}.mp4&quot;
+        ///
+        ///
+        ///@echo.
+        ///@echo when no errors - destination video saved to {output}
+        ///@echo.
+        ///pause
+        ///exit.
+        /// </summary>
+        internal static string download_m3u8 {
+            get {
+                return ResourceManager.GetString("download_m3u8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
+        ///echo -------------------
+        ///echo.
+        ///
+        ///::Change code page to Unicode
+        ///chcp 65001
+        ///
         ///set bitrate=*bitrate*
         ///set preset=*preset*
         ///set output=*output*
+        ///set filters=*filters*
+        ///set ffmpeg=*curr*\ffmpeg.exe
         ///
-        ///ffmpeg -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -acodec copy -q:v 0 -q:a 0 &quot;%output%&quot;
+        ///%ffmpeg% -i &quot;*video*&quot;%filters%-b:v %bitrate% %timecut% -preset %preset% -vcodec libx264 -acodec copy &quot;%output%&quot;
         ///
-        ///pause.
+        ///@echo.
+        ///@echo when no errors - destination video saved to %output%
+        ///@echo.
+        ///::pause
+        ///timeout /t 10
+        ///exit.
         /// </summary>
         internal static string onepassCMD {
             get {
@@ -82,22 +144,49 @@ namespace ffmpeg_mini_gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to echo ffmpeg-mini-gui
+        ///   Looks up a localized string similar to ::@echo off
+        ///echo ffmpeg-mini-gui
         ///echo -------------------
         ///echo.
         ///
-        ///set input=*video*
-        ///set subtitle=*sub*
+        ///::Change code page to Unicode
+        ///chcp 65001
+        ///
         ///set bitrate=*bitrate*
         ///set preset=*preset*
         ///set output=*output*
+        ///set filters=*filters*
+        ///set ffmpeg=*curr*\ffmpeg.exe
         ///
-        ///ffmpeg -y -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -pass 1 -an -f mp4 NUL
-        ///ffmpeg -i &quot;%input%&quot; -vf &quot;subtitles=&apos;%subtitle%&apos;:force_style=&apos;FontName=Arial,FontSize=24&apos;&quot; -b:v %bitrate% -preset %preset% -vcodec libx264 -pass 2 -acodec copy -q:v 0 -q:a 0 &quot;%outpu [rest of string was truncated]&quot;;.
+        ///%ffmpeg% -y -i &quot;*video*&quot;%filters%-b:v %bitrate% %timecut% -preset %preset% -vcodec libx264 -pass 1 -an -f mp4 NUL
+        ///%ffmpeg% -i &quot;*video*&quot;%filters%-b:v %bitrate% %timecut% -preset %preset% -vcodec libx264 -pass 2 -acodec copy &quot;%output%&quot;
+        ///
+        ///@echo.
+        ///@echo when no errors - destinat [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string twopassCMD {
             get {
                 return ResourceManager.GetString("twopassCMD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap up32 {
+            get {
+                object obj = ResourceManager.GetObject("up32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yt_dlp16 {
+            get {
+                object obj = ResourceManager.GetObject("yt-dlp16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

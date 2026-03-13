@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.txtVideo = new System.Windows.Forms.TextBox();
             this.txtSubtitle = new System.Windows.Forms.TextBox();
@@ -42,6 +43,22 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtFPS = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.btnMulti = new System.Windows.Forms.Button();
+            this.ctxTools = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.btnDNm3u8ByURL = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_dlp_DN_video = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnCombine = new System.Windows.Forms.Button();
+            this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
+            this.lblEndTime = new System.Windows.Forms.Label();
+            this.lblStartTime = new System.Windows.Forms.Label();
+            this.btnSubToUTF8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitButton1 = new ffmpeg_mini_gui.SplitButton();
+            this.progressBar = new ffmpeg_mini_gui.TextProgressBar();
+            this.ctxTools.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -57,6 +74,7 @@
             // 
             this.txtVideo.AllowDrop = true;
             this.txtVideo.Location = new System.Drawing.Point(16, 32);
+            this.txtVideo.MaxLength = 0;
             this.txtVideo.Name = "txtVideo";
             this.txtVideo.ReadOnly = true;
             this.txtVideo.Size = new System.Drawing.Size(476, 23);
@@ -106,6 +124,8 @@
             // chkTwoPass
             // 
             this.chkTwoPass.AutoSize = true;
+            this.chkTwoPass.Checked = true;
+            this.chkTwoPass.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTwoPass.Location = new System.Drawing.Point(19, 171);
             this.chkTwoPass.Name = "chkTwoPass";
             this.chkTwoPass.Size = new System.Drawing.Size(82, 19);
@@ -143,7 +163,7 @@
             // 
             // btn
             // 
-            this.btn.Location = new System.Drawing.Point(19, 210);
+            this.btn.Location = new System.Drawing.Point(19, 291);
             this.btn.Name = "btn";
             this.btn.Size = new System.Drawing.Size(473, 35);
             this.btn.TabIndex = 9;
@@ -183,11 +203,152 @@
             this.label6.TabIndex = 12;
             this.label6.Text = "fps :";
             // 
+            // btnMulti
+            // 
+            this.btnMulti.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.btnMulti.Location = new System.Drawing.Point(333, 11);
+            this.btnMulti.Name = "btnMulti";
+            this.btnMulti.Size = new System.Drawing.Size(160, 20);
+            this.btnMulti.TabIndex = 14;
+            this.btnMulti.Text = "multi subs hardcoding";
+            this.btnMulti.UseVisualStyleBackColor = true;
+            this.btnMulti.Click += new System.EventHandler(this.btnMulti_Click);
+            // 
+            // ctxTools
+            // 
+            this.ctxTools.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnDNm3u8ByURL,
+            this.btnSubToUTF8,
+            this.btn_dlp_DN_video});
+            this.ctxTools.Name = "contextMenuStrip1";
+            this.ctxTools.Size = new System.Drawing.Size(244, 92);
+            // 
+            // btnDNm3u8ByURL
+            // 
+            this.btnDNm3u8ByURL.Name = "btnDNm3u8ByURL";
+            this.btnDNm3u8ByURL.Size = new System.Drawing.Size(243, 22);
+            this.btnDNm3u8ByURL.Text = "download .m3u8 playlist";
+            this.btnDNm3u8ByURL.Click += new System.EventHandler(this.btnDNm3u8ByURL_Click);
+            // 
+            // btn_dlp_DN_video
+            // 
+            this.btn_dlp_DN_video.Image = global::ffmpeg_mini_gui.Properties.Resources.yt_dlp16;
+            this.btn_dlp_DN_video.Name = "btn_dlp_DN_video";
+            this.btn_dlp_DN_video.Size = new System.Drawing.Size(243, 22);
+            this.btn_dlp_DN_video.Text = "download video && extract audio";
+            this.btn_dlp_DN_video.Click += new System.EventHandler(this.btn_dlp_DN_video_Click);
+            // 
+            // btnCombine
+            // 
+            this.btnCombine.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.btnCombine.Location = new System.Drawing.Point(167, 11);
+            this.btnCombine.Name = "btnCombine";
+            this.btnCombine.Size = new System.Drawing.Size(160, 20);
+            this.btnCombine.TabIndex = 23;
+            this.btnCombine.Text = "combine videos";
+            this.btnCombine.UseVisualStyleBackColor = true;
+            this.btnCombine.Click += new System.EventHandler(this.btnCombine_Click);
+            // 
+            // txtStartTime
+            // 
+            this.txtStartTime.Location = new System.Drawing.Point(111, 20);
+            this.txtStartTime.Mask = "00:00:00";
+            this.txtStartTime.Name = "txtStartTime";
+            this.txtStartTime.Size = new System.Drawing.Size(66, 23);
+            this.txtStartTime.TabIndex = 24;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.txtEndTime);
+            this.groupBox1.Controls.Add(this.lblEndTime);
+            this.groupBox1.Controls.Add(this.txtStartTime);
+            this.groupBox1.Controls.Add(this.lblStartTime);
+            this.groupBox1.Location = new System.Drawing.Point(19, 213);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(473, 72);
+            this.groupBox1.TabIndex = 25;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = " cut (not required)  : ";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.label9.Location = new System.Drawing.Point(60, 52);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(367, 13);
+            this.label9.TabIndex = 27;
+            this.label9.Text = "if only \'start time\' defined  goes till the end of the video";
+            // 
+            // txtEndTime
+            // 
+            this.txtEndTime.Location = new System.Drawing.Point(322, 20);
+            this.txtEndTime.Mask = "00:00:00";
+            this.txtEndTime.Name = "txtEndTime";
+            this.txtEndTime.Size = new System.Drawing.Size(66, 23);
+            this.txtEndTime.TabIndex = 26;
+            // 
+            // lblEndTime
+            // 
+            this.lblEndTime.AutoSize = true;
+            this.lblEndTime.Location = new System.Drawing.Point(237, 23);
+            this.lblEndTime.Name = "lblEndTime";
+            this.lblEndTime.Size = new System.Drawing.Size(84, 15);
+            this.lblEndTime.TabIndex = 25;
+            this.lblEndTime.Text = "end time : ";
+            this.lblEndTime.Click += new System.EventHandler(this.ClearCutMaskedBox_Click);
+            // 
+            // lblStartTime
+            // 
+            this.lblStartTime.AutoSize = true;
+            this.lblStartTime.Location = new System.Drawing.Point(16, 23);
+            this.lblStartTime.Name = "lblStartTime";
+            this.lblStartTime.Size = new System.Drawing.Size(98, 15);
+            this.lblStartTime.TabIndex = 0;
+            this.lblStartTime.Text = "start time : ";
+            this.lblStartTime.Click += new System.EventHandler(this.ClearCutMaskedBox_Click);
+            // 
+            // btnSubToUTF8
+            // 
+            this.btnSubToUTF8.Name = "btnSubToUTF8";
+            this.btnSubToUTF8.Size = new System.Drawing.Size(243, 22);
+            this.btnSubToUTF8.Text = "subtitle to UTF8";
+            this.btnSubToUTF8.Click += new System.EventHandler(this.btnSubToUTF8_Click);
+            // 
+            // splitButton1
+            // 
+            this.splitButton1.Location = new System.Drawing.Point(425, 169);
+            this.splitButton1.Menu = this.ctxTools;
+            this.splitButton1.Name = "splitButton1";
+            this.splitButton1.Size = new System.Drawing.Size(68, 25);
+            this.splitButton1.TabIndex = 22;
+            this.splitButton1.Text = "tools";
+            this.splitButton1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.splitButton1.UseVisualStyleBackColor = true;
+            // 
+            // progressBar
+            // 
+            this.progressBar.CustomText = "";
+            this.progressBar.Location = new System.Drawing.Point(142, 171);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.ProgressColor = System.Drawing.Color.LightGreen;
+            this.progressBar.Size = new System.Drawing.Size(158, 23);
+            this.progressBar.TabIndex = 17;
+            this.progressBar.TextColor = System.Drawing.Color.Black;
+            this.progressBar.TextFont = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.progressBar.VisualMode = ffmpeg_mini_gui.ProgressBarDisplayMode.CurrProgress;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(508, 257);
+            this.ClientSize = new System.Drawing.Size(508, 338);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.btnCombine);
+            this.Controls.Add(this.splitButton1);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.btnMulti);
             this.Controls.Add(this.txtFPS);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtScale);
@@ -207,6 +368,9 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.ctxTools.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +392,20 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtFPS;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnMulti;
+        private TextProgressBar progressBar;
+        private System.Windows.Forms.ContextMenuStrip ctxTools;
+        private System.Windows.Forms.ToolStripMenuItem btnDNm3u8ByURL;
+        private SplitButton splitButton1;
+        private System.Windows.Forms.Button btnCombine;
+        private System.Windows.Forms.MaskedTextBox txtStartTime;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.MaskedTextBox txtEndTime;
+        private System.Windows.Forms.Label lblEndTime;
+        private System.Windows.Forms.Label lblStartTime;
+        private System.Windows.Forms.ToolStripMenuItem btn_dlp_DN_video;
+        private System.Windows.Forms.ToolStripMenuItem btnSubToUTF8;
     }
 }
 
