@@ -46,7 +46,6 @@
             // 
             // lst
             // 
-            this.lst.AllowDrop = true;
             this.lst.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lst.FormattingEnabled = true;
@@ -55,8 +54,6 @@
             this.lst.Name = "lst";
             this.lst.Size = new System.Drawing.Size(425, 154);
             this.lst.TabIndex = 0;
-            this.lst.DragDrop += new System.Windows.Forms.DragEventHandler(this.lst_DragDrop);
-            this.lst.DragEnter += new System.Windows.Forms.DragEventHandler(this.lst_DragEnter);
             // 
             // btnOK
             // 
