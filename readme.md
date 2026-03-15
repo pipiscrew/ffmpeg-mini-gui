@@ -10,6 +10,8 @@ download the latest ffmpeg from [here](https://www.ffmpeg.org/download.html). Ad
 
 alternative :
 * [QuickFFSync](https://gitlab.com/hadoukez/quickffsync) - python
+    * [RedFFmpegatron](https://gitlab.com/hadoukez/redffmpegatron) - python - for AMD AMF
 * [Clever FFmpeg GUI](https://forum.videohelp.com/threads/396490) - vb.net
 * ;( [SmartFFmpeg](https://freeware.satria.de/SmartFFmpeg/index.php?lang=EN) - csharp
 * [DTA Cutter](https://github.com/geek-at/simplecutter) - electron
+* [ffmpeg-over-ip](https://github.com/steelbrain/ffmpeg-over-ip) - go - connect to remote ffmpeg servers
