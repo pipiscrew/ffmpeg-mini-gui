@@ -206,6 +206,18 @@ namespace ffmpeg_mini_gui
             x.ShowDialog();
         }
 
+        private void btn_convert_img_Click(object sender, EventArgs e)
+        {
+            frmConvertImage x = new frmConvertImage();
+            x.ShowDialog();
+        }
+
+        private void btn_convert_audio_Click(object sender, EventArgs e)
+        {
+            frmConvertAudio x = new frmConvertAudio();
+            x.ShowDialog();
+        }
+
 
     }
 

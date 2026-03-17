@@ -46,7 +46,9 @@
             this.btnMulti = new System.Windows.Forms.Button();
             this.ctxTools = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnDNm3u8ByURL = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSubToUTF8 = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_dlp_DN_video = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_convert_img = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCombine = new System.Windows.Forms.Button();
             this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -54,9 +56,9 @@
             this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
             this.lblEndTime = new System.Windows.Forms.Label();
             this.lblStartTime = new System.Windows.Forms.Label();
-            this.btnSubToUTF8 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitButton1 = new ffmpeg_mini_gui.SplitButton();
             this.progressBar = new ffmpeg_mini_gui.TextProgressBar();
+            this.btn_convert_audio = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTools.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -219,9 +221,11 @@
             this.ctxTools.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnDNm3u8ByURL,
             this.btnSubToUTF8,
-            this.btn_dlp_DN_video});
+            this.btn_dlp_DN_video,
+            this.btn_convert_img,
+            this.btn_convert_audio});
             this.ctxTools.Name = "contextMenuStrip1";
-            this.ctxTools.Size = new System.Drawing.Size(244, 92);
+            this.ctxTools.Size = new System.Drawing.Size(244, 136);
             // 
             // btnDNm3u8ByURL
             // 
@@ -230,6 +234,13 @@
             this.btnDNm3u8ByURL.Text = "download .m3u8 playlist";
             this.btnDNm3u8ByURL.Click += new System.EventHandler(this.btnDNm3u8ByURL_Click);
             // 
+            // btnSubToUTF8
+            // 
+            this.btnSubToUTF8.Name = "btnSubToUTF8";
+            this.btnSubToUTF8.Size = new System.Drawing.Size(243, 22);
+            this.btnSubToUTF8.Text = "subtitle to UTF8";
+            this.btnSubToUTF8.Click += new System.EventHandler(this.btnSubToUTF8_Click);
+            // 
             // btn_dlp_DN_video
             // 
             this.btn_dlp_DN_video.Image = global::ffmpeg_mini_gui.Properties.Resources.yt_dlp16;
@@ -237,6 +248,13 @@
             this.btn_dlp_DN_video.Size = new System.Drawing.Size(243, 22);
             this.btn_dlp_DN_video.Text = "download video && extract audio";
             this.btn_dlp_DN_video.Click += new System.EventHandler(this.btn_dlp_DN_video_Click);
+            // 
+            // btn_convert_img
+            // 
+            this.btn_convert_img.Name = "btn_convert_img";
+            this.btn_convert_img.Size = new System.Drawing.Size(243, 22);
+            this.btn_convert_img.Text = "convert image";
+            this.btn_convert_img.Click += new System.EventHandler(this.btn_convert_img_Click);
             // 
             // btnCombine
             // 
@@ -309,13 +327,6 @@
             this.lblStartTime.Text = "start time : ";
             this.lblStartTime.Click += new System.EventHandler(this.ClearCutMaskedBox_Click);
             // 
-            // btnSubToUTF8
-            // 
-            this.btnSubToUTF8.Name = "btnSubToUTF8";
-            this.btnSubToUTF8.Size = new System.Drawing.Size(243, 22);
-            this.btnSubToUTF8.Text = "subtitle to UTF8";
-            this.btnSubToUTF8.Click += new System.EventHandler(this.btnSubToUTF8_Click);
-            // 
             // splitButton1
             // 
             this.splitButton1.Location = new System.Drawing.Point(425, 169);
@@ -338,6 +349,13 @@
             this.progressBar.TextColor = System.Drawing.Color.Black;
             this.progressBar.TextFont = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.progressBar.VisualMode = ffmpeg_mini_gui.ProgressBarDisplayMode.CurrProgress;
+            // 
+            // btn_convert_audio
+            // 
+            this.btn_convert_audio.Name = "btn_convert_audio";
+            this.btn_convert_audio.Size = new System.Drawing.Size(243, 22);
+            this.btn_convert_audio.Text = "convert audio";
+            this.btn_convert_audio.Click += new System.EventHandler(this.btn_convert_audio_Click);
             // 
             // Form1
             // 
@@ -406,6 +424,8 @@
         private System.Windows.Forms.Label lblStartTime;
         private System.Windows.Forms.ToolStripMenuItem btn_dlp_DN_video;
         private System.Windows.Forms.ToolStripMenuItem btnSubToUTF8;
+        private System.Windows.Forms.ToolStripMenuItem btn_convert_img;
+        private System.Windows.Forms.ToolStripMenuItem btn_convert_audio;
     }
 }
 

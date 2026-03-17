@@ -1,0 +1,206 @@
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ffmpeg_mini_gui
+{
+    public partial class frmConvertImage : Form
+    {
+        /*
+         * https://ffmpeg.org/ffmpeg-formats.html#Format-Options
+         * https://stackoverflow.com/a/20587693
+         * https://www.ffmpeg.org/general.html#Video-Codecs
+         * https://www.ffmpeg.org/general.html#Audio-Codecs
+         */
+
+        List<string> validExtensions = new List<string>
+        {
+            ".bmp", ".dpx", ".exr", ".fits", ".hdr", ".png", 
+            ".ppm", ".tif", ".tiff", ".tga", ".webp", ".jpeg", 
+            ".jpg", ".gif", ".pam", ".pgm", ".ppm", ".xbm", 
+            ".xpm", ".dcm", ".dicm",".dicom", ".ima", ".img", ".psd"
+        };
+
+        public frmConvertImage()
+        {
+            InitializeComponent();
+            cmbOutputFormat.SelectedIndex = 0;
+        }
+
+        #region Listbox DragDrop
+
+        private void lst_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filelist = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            Array.Sort(filelist);
+
+            foreach (string file in filelist)
+            {
+                if (validExtensions.Any(ext => ext.Equals(Path.GetExtension(file).ToLower())))
+                    lst.Items.Add(file);
+            }
+
+            this.Text = "File(s) added " + lst.Items.Count.ToString();
+        }
+
+        private void lst_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+
+        }
+
+        #endregion
+
+        private async void btnOK_Click(object sender, EventArgs e)
+        {
+            if (lst.Items.Count > 0)
+            {
+                label2.Visible = false;
+                progressBar.Visible = true;
+                progressBar.Maximum = lst.Items.Count;
+                progressBar.Value = 0;
+                if (await DoConversion(lst.Items.Cast<string>().ToArray(), cmbOutputFormat.Text))
+                    this.DialogResult = DialogResult.OK;
+            }
+            else
+                this.Close();
+        }
+
+        internal async Task<bool> DoConversion(string[] files, string cmbOutputFormat)
+        {
+            return await Task.Run(() =>
+             {
+                 string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
+                 string[] sourceItems = files;
+
+                 //create #destination# (output) folder
+                 Directory.CreateDirectory(outputDirectory);
+
+                 string pointFirstSuccess = outputDirectory;
+                 string errorTXT = string.Empty;
+                 int processed = 0;
+
+                 this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, false)));
+                 foreach (string file in sourceItems)
+                 {
+                     string outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + cmbOutputFormat);
+
+                     if (File.Exists(outputFileName))
+                         outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + General.GetNow() + cmbOutputFormat);
+
+                     ProcessStartInfo processStartInfo = new ProcessStartInfo
+                     {
+                         FileName = "ffmpeg",
+                         Arguments = "-y -i \"" + file + "\" \"" + outputFileName + "\"",  // -y overwrite || for JPG -- 1 = best, 31 = worst -- -q:v 31 
+                         RedirectStandardOutput = false,
+                         RedirectStandardError = false,
+                         UseShellExecute = false,
+                         CreateNoWindow = true
+                     };
+
+                     try
+                     {
+                         using (Process process = Process.Start(processStartInfo))
+                         {
+                             Console.WriteLine(processStartInfo.Arguments);
+                             process.WaitForExit();
+
+                             if (process.ExitCode != 0)
+                             {
+                                 errorTXT += file + "\r\n";
+                             }
+                             else
+                             {
+                                 processed++;
+
+                                 if (pointFirstSuccess == outputDirectory)
+                                     pointFirstSuccess = outputFileName;
+                             }
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+                         General.Mes(ex.Message, MessageBoxIcon.Error);
+                         return false;
+                     }
+
+                     progressBar.BeginInvoke(new Action(() => progressBar.Value++));
+                 }
+
+                 this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, true)));
+
+                 if (errorTXT.Length > 0)
+                     General.Mes(string.Format("Success : {0} \r\n\r\nFailed :\r\n\r\n{1}", processed, errorTXT), MessageBoxIcon.Exclamation);
+
+                 General.PointFile(pointFirstSuccess);
+                 return true;
+             });
+
+        }
+
+
+        /// <summary>
+        /// ////////////////////// INVALID PROC - NOT VALID USE OF #CONCAT# SWITCH - IF THE SAME FILE INCL 2 TIMES, THE OUTPUT IS DIFFERENT!
+        /// </summary>
+        //private void DoConversion2()
+        //{
+        //    string fileListPath = Path.GetTempFileName();
+        //    string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
+
+        //    //list #source# filepaths
+        //    string[] items = lst.Items.Cast<string>().Select(item => "file '" + item + "'").ToArray();
+        //    //write for txt filepaths
+        //    File.WriteAllLines(fileListPath, items);
+
+        //    //create #destination# (output) folder
+        //    Directory.CreateDirectory(outputDirectory);
+
+        //    ProcessStartInfo processStartInfo = new ProcessStartInfo
+        //    {
+        //        FileName = "ffmpeg",
+        //        // -f concat: Specifies the input format as a list.
+        //        // -safe 0: Allows using absolute paths for files.
+        //        Arguments = "-f concat -safe 0 -i \"" + fileListPath + "\" \"" + outputDirectory + "%d" + cmbOutputFormat.Text + "\"",
+        //        RedirectStandardOutput = false,
+        //        RedirectStandardError = false,
+        //        UseShellExecute = false,
+        //        CreateNoWindow = false
+        //    };
+
+        //    // On the batch file - Instead of just %d, use %%d. << must try.
+        //    try
+        //    {
+        //        using (Process process = Process.Start(processStartInfo))
+        //        {
+        //            process.WaitForExit();
+
+        //            if (process.ExitCode == 0)
+        //            {
+        //                Console.WriteLine("Conversion complete. Files saved in: " + outputDirectory);
+        //                this.DialogResult = DialogResult.OK;
+        //            }
+        //            else
+        //            {
+        //                General.Mes("ffmpeg exitcode is not equal with 0, something wrong!", MessageBoxIcon.Error);
+        //                //string error = process.StandardError.ReadToEnd();
+        //                //Console.WriteLine("Error occurred: " + error);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        General.Mes(ex.Message, MessageBoxIcon.Error);
+        //    }
+        //}
+
+    }
+}

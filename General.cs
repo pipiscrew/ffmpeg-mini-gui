@@ -257,6 +257,11 @@ namespace ffmpeg_mini_gui
         }
 
         #endregion
+
+        public static void PointFile(string filePath)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", string.Format("/select,\"{0}\"", filePath));
+        }
     }
 
 
