@@ -61,87 +61,92 @@ namespace ffmpeg_mini_gui
         {
             if (lst.Items.Count > 0)
             {
+                var progress = new Progress<int>(value => { progressBar.Value++; });
+                var formElements = new Progress<bool>(value => { General.EnableControls(this.Controls, value); });
+
                 label2.Visible = false;
                 progressBar.Visible = true;
                 progressBar.Maximum = lst.Items.Count;
                 progressBar.Value = 0;
-                if (await DoConversion(lst.Items.Cast<string>().ToArray(), cmbOutputFormat.Text))
+
+                string outputExtension = cmbOutputFormat.Text;
+                string[] files = lst.Items.Cast<string>().ToArray();
+
+                var result = await Task.Run(() => DoConversion(files, outputExtension, progress, formElements));
+                if (result)
                     this.DialogResult = DialogResult.OK;
             }
             else
                 this.Close();
         }
 
-        internal async Task<bool> DoConversion(string[] files, string cmbOutputFormat)
+        internal bool DoConversion(string[] files, string cmbOutputFormat, IProgress<int> progress, IProgress<bool> formElements)
         {
-            return await Task.Run(() =>
+            string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
+            string[] sourceItems = files;
+
+            //create #destination# (output) folder
+            Directory.CreateDirectory(outputDirectory);
+
+            string pointFirstSuccess = outputDirectory;
+            string errorTXT = string.Empty;
+            int processed = 0;
+
+            formElements.Report(false);
+            foreach (string file in sourceItems)
             {
-                string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
-                string[] sourceItems = files;
+                string outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + cmbOutputFormat);
 
-                //create #destination# (output) folder
-                Directory.CreateDirectory(outputDirectory);
+                if (File.Exists(outputFileName))
+                    outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + General.GetNow() + cmbOutputFormat);
 
-                string pointFirstSuccess = outputDirectory;
-                string errorTXT = string.Empty;
-                int processed = 0;
-
-                this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, false)));
-                foreach (string file in sourceItems)
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
                 {
-                    string outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + cmbOutputFormat);
+                    FileName = "ffmpeg",
+                    Arguments = "-y -i \"" + file + "\" \"" + outputFileName + "\"",  // -y overwrite || -b:a 192k 
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
-                    if (File.Exists(outputFileName))
-                        outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + General.GetNow() + cmbOutputFormat);
-
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                try
+                {
+                    using (Process process = Process.Start(processStartInfo))
                     {
-                        FileName = "ffmpeg",
-                        Arguments = "-y -i \"" + file + "\" \"" + outputFileName + "\"",  // -y overwrite || -b:a 192k 
-                        RedirectStandardOutput = false,
-                        RedirectStandardError = false,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
+                        Console.WriteLine(processStartInfo.Arguments);
+                        process.WaitForExit();
 
-                    try
-                    {
-                        using (Process process = Process.Start(processStartInfo))
+                        if (process.ExitCode != 0)
                         {
-                            Console.WriteLine(processStartInfo.Arguments);
-                            process.WaitForExit();
+                            errorTXT += file + "\r\n";
+                        }
+                        else
+                        {
+                            processed++;
 
-                            if (process.ExitCode != 0)
-                            {
-                                errorTXT += file + "\r\n";
-                            }
-                            else
-                            {
-                                processed++;
-
-                                if (pointFirstSuccess == outputDirectory)
-                                    pointFirstSuccess = outputFileName;
-                            }
+                            if (pointFirstSuccess == outputDirectory)
+                                pointFirstSuccess = outputFileName;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        General.Mes(ex.Message, MessageBoxIcon.Error);
-                        return false;
-                    }
-
-                    progressBar.BeginInvoke(new Action(() => progressBar.Value++));
+                }
+                catch (Exception ex)
+                {
+                    General.Mes(ex.Message, MessageBoxIcon.Error);
+                    return false;
                 }
 
-                this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, true)));
+                progress.Report(1);
+            }
 
-                if (errorTXT.Length > 0)
-                    General.Mes(string.Format("Success : {0} \r\n\r\nFailed :\r\n\r\n{1}", processed, errorTXT), MessageBoxIcon.Exclamation);
+            formElements.Report(true);
 
-                General.PointFile(pointFirstSuccess);
+            if (errorTXT.Length > 0)
+                General.Mes(string.Format("Success : {0} \r\n\r\nFailed :\r\n\r\n{1}", processed, errorTXT), MessageBoxIcon.Exclamation);
 
-                return true;
-            });
+            General.PointFile(pointFirstSuccess);
+
+            return true;
         }
     }
 }

@@ -64,21 +64,27 @@ namespace ffmpeg_mini_gui
         {
             if (lst.Items.Count > 0)
             {
+                var progress = new Progress<int>(value => { progressBar.Value++; });
+                var formElements = new Progress<bool>(value => { General.EnableControls(this.Controls, value); });
+
                 label2.Visible = false;
                 progressBar.Visible = true;
                 progressBar.Maximum = lst.Items.Count;
                 progressBar.Value = 0;
-                if (await DoConversion(lst.Items.Cast<string>().ToArray(), cmbOutputFormat.Text))
+
+                string outputExtension = cmbOutputFormat.Text;
+                string[] files = lst.Items.Cast<string>().ToArray();
+
+                var result = await Task.Run(() => DoConversion(files, outputExtension, progress, formElements));
+                if (result)
                     this.DialogResult = DialogResult.OK;
             }
             else
                 this.Close();
         }
 
-        internal async Task<bool> DoConversion(string[] files, string cmbOutputFormat)
+        internal bool DoConversion(string[] files, string cmbOutputFormat, IProgress<int> progress, IProgress<bool> formElements)
         {
-            return await Task.Run(() =>
-             {
                  string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
                  string[] sourceItems = files;
 
@@ -89,7 +95,7 @@ namespace ffmpeg_mini_gui
                  string errorTXT = string.Empty;
                  int processed = 0;
 
-                 this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, false)));
+                 formElements.Report(false);
                  foreach (string file in sourceItems)
                  {
                      string outputFileName = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + cmbOutputFormat);
@@ -133,18 +139,16 @@ namespace ffmpeg_mini_gui
                          return false;
                      }
 
-                     progressBar.BeginInvoke(new Action(() => progressBar.Value++));
+                     progress.Report(1);
                  }
 
-                 this.BeginInvoke(new Action(() => General.EnableControls(this.Controls, true)));
+                 formElements.Report(true);
 
                  if (errorTXT.Length > 0)
                      General.Mes(string.Format("Success : {0} \r\n\r\nFailed :\r\n\r\n{1}", processed, errorTXT), MessageBoxIcon.Exclamation);
 
                  General.PointFile(pointFirstSuccess);
                  return true;
-             });
-
         }
 
 
