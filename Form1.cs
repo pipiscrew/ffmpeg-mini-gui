@@ -192,8 +192,6 @@ namespace ffmpeg_mini_gui
             x.ShowDialog();
         }
 
-#endregion 
-
         private void btnDNm3u8ByURL_Click(object sender, EventArgs e)
         {
             frmDNm3u8 x = new frmDNm3u8();
@@ -218,6 +216,13 @@ namespace ffmpeg_mini_gui
             x.ShowDialog();
         }
 
+        private void btnVTTtoSRT_Click(object sender, EventArgs e)
+        {
+            frmMultiSubVTT x = new frmMultiSubVTT();
+            x.ShowDialog();
+        }
+
+#endregion
 
     }
 

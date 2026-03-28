@@ -92,6 +92,12 @@
     <Compile Include="frmConvertImage.designer.cs">
       <DependentUpon>frmConvertImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmMultiSubVTT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMultiSubVTT.designer.cs">
+      <DependentUpon>frmMultiSubVTT.cs</DependentUpon>
+    </Compile>
     <Compile Include="General.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -103,6 +109,9 @@
     <Compile Include="Repository\ActionSingle.cs" />
     <Compile Include="Repository\ConversionProperties.cs" />
     <Compile Include="Repository\IAction.cs" />
+    <Compile Include="SubtitleVTT\SrtWriter.cs" />
+    <Compile Include="SubtitleVTT\SubtitleItem.cs" />
+    <Compile Include="SubtitleVTT\VttParser.cs" />
     <Compile Include="TextEncodingDetect.cs" />
     <Compile Include="Controls\TextProgressBar.cs">
       <SubType>Component</SubType>
@@ -130,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmConvertImage.resx">
       <DependentUpon>frmConvertImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMultiSubVTT.resx">
+      <DependentUpon>frmMultiSubVTT.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

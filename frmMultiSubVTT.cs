@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace ffmpeg_mini_gui
 {
-    public partial class frmMultiSub : Form
+    public partial class frmMultiSubVTT : Form
     {
-        public frmMultiSub()
+        public frmMultiSubVTT()
         {
             InitializeComponent();
         }
@@ -22,7 +24,7 @@ namespace ffmpeg_mini_gui
 
             foreach (string file in filelist)
             {
-                if (file.ToLower().EndsWith(".srt"))
+                if (file.ToLower().EndsWith(".vtt"))
                     lst.Items.Add(file);
             }
 
@@ -52,27 +54,43 @@ namespace ffmpeg_mini_gui
         {
             try
             {
+                IEnumerable<SubtitleItem> items;
                 string log = string.Empty;
                 int processed = 0;
                 foreach (string f in lst.Items)
                 {
+                    FileInfo source = new FileInfo(f);
+
                     if (General.IsFileUtf8(f))
+                    {
+                        items = new VttParser().ParseStream(source.OpenRead(), Encoding.UTF8);
+                    }
+                    else //Read as ANSI
+                        items = new VttParser().ParseStream(source.OpenRead(), Encoding.Default);
+
+                    if (items == null || items.Count() < 1)
                     {
                         log += Path.GetFileName(f) + "\n";
                         continue;
                     }
 
-                    //Read as ANSI
-                    String subTXT = File.ReadAllText(f, Encoding.Default);
+                    // srt filepath
+                    string destinationFilepath = Path.Combine(Path.GetDirectoryName(f), Path.GetFileNameWithoutExtension(f) + ".srt");
 
-                    //backup
-                    if (File.Exists(f + ".bak"))
-                        System.IO.File.Move(f, f + DateTime.Now.ToString("yyyy-MM-dd-HHmmss") + ".bak");
-                    else
-                        System.IO.File.Move(f, f + ".bak");
+                    if (File.Exists(destinationFilepath))
+                        destinationFilepath = Path.Combine(Path.GetDirectoryName(f), Path.GetFileNameWithoutExtension(f) + DateTime.Now.ToString("yyyy-MM-dd-HHmmss") + ".srt");
 
-                    //Write as UTF8
-                    File.WriteAllText(Path.GetDirectoryName(f) + "\\" + Path.GetFileNameWithoutExtension(f) + ".srt", subTXT, Encoding.UTF8);
+                    FileInfo destination = new FileInfo(destinationFilepath);
+
+                    try
+                    {
+                        new SrtWriter().WriteStream(destination.OpenWrite(), items, true);
+                    }
+                    catch
+                    {
+                        log += Path.GetFileName(f) + "\n";
+                        continue;
+                    }
 
                     processed++;
                 }
@@ -82,7 +100,7 @@ namespace ffmpeg_mini_gui
 
                 string noConvertsionMade = string.Empty;
                 if (log != string.Empty)
-                    noConvertsionMade = "\r\n\r\nthe following found as UTF8, no reencoding made :\n\n" + log;
+                    noConvertsionMade = "\r\n\r\nthe following found as not valid subtitles :\n\n" + log;
 
                 General.Mes(processed + " converted!" + noConvertsionMade);
 

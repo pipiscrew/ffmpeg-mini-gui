@@ -80,10 +80,9 @@ namespace ffmpeg_mini_gui
                 this.Close();
         }
 
-        internal bool DoConversion(string[] files, string cmbOutputFormat, IProgress<int> progress, IProgress<bool> formElements)
+        internal static bool DoConversion(string[] sourceItems, string cmbOutputFormat, IProgress<int> progress, IProgress<bool> formElements)
         {
             string outputDirectory = General.appStartPath + "\\output" + General.GetNow() + "\\";
-            string[] sourceItems = files;
 
             //create #destination# (output) folder
             Directory.CreateDirectory(outputDirectory);
