@@ -19,10 +19,10 @@ namespace ffmpeg_mini_gui
             TextBoxWatermarkExtensionMethod.SetWatermark(txtFPS, "4");
             General.appStartPath = Application.StartupPath;
             General.ytdlp_x86 = General.appStartPath + "\\yt-dlp_x86.exe";
-            General.ytdlp = General.appStartPath + "\\yt-dlp_x86.exe";
+            General.ytdlp = General.appStartPath + "\\yt-dlp.exe";
 
             //show hide yt-dlp options
-            General.showYToptions = (File.Exists(General.ytdlp_x86) || File.Exists(General.ytdlp_x86));
+            General.showYToptions = (File.Exists(General.ytdlp) || File.Exists(General.ytdlp_x86));
             ctxTools.Items.OfType<ToolStripItem>().Where(c => c.Name.StartsWith("btn_dlp")).ToList().ForEach(c => c.Visible = General.showYToptions);
         }
 

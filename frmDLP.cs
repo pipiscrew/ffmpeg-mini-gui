@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ffmpeg_mini_gui
@@ -10,6 +13,7 @@ namespace ffmpeg_mini_gui
         public frmDLP()
         {
             InitializeComponent();
+            cmbImpersonate.SelectedIndex = 29;
         }
 
         private async void btnOK_Click(object sender, EventArgs e)
@@ -46,6 +50,9 @@ namespace ffmpeg_mini_gui
                 cmdArgs = GetAudioConfig(listFilename);
             else if (chkList.Checked)
                 cmdArgs = GetListConfig(listFilename);
+
+            if (chkImpersonate.Checked)
+                cmdArgs += string.Format(" --impersonate {0}", cmbImpersonate.Text);
 
             //write batch file
             string template = ffmpeg_mini_gui.Properties.Resources.cmd_universal;
@@ -127,7 +134,9 @@ namespace ffmpeg_mini_gui
             chkBestAudio.Checked = false;
         }
 
-       
-
+        private void chkImpersonate_CheckedChanged(object sender, EventArgs e)
+        {
+            grpImpersonate.Enabled = chkImpersonate.Checked;
+        }
     }
 }

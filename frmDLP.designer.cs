@@ -41,7 +41,11 @@
             this.chk480 = new System.Windows.Forms.RadioButton();
             this.chkPassthrough = new System.Windows.Forms.RadioButton();
             this.chkList = new System.Windows.Forms.RadioButton();
+            this.grpImpersonate = new System.Windows.Forms.GroupBox();
+            this.cmbImpersonate = new System.Windows.Forms.ComboBox();
+            this.chkImpersonate = new System.Windows.Forms.CheckBox();
             this.grpVideo.SuspendLayout();
+            this.grpImpersonate.SuspendLayout();
             this.SuspendLayout();
             // 
             // lst
@@ -58,7 +62,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(363, 365);
+            this.btnOK.Location = new System.Drawing.Point(363, 452);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 29);
             this.btnOK.TabIndex = 1;
@@ -69,7 +73,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(13, 365);
+            this.btnCancel.Location = new System.Drawing.Point(13, 452);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 29);
             this.btnCancel.TabIndex = 2;
@@ -194,12 +198,74 @@
             this.chkList.Text = "list available formats";
             this.chkList.UseVisualStyleBackColor = true;
             // 
+            // grpImpersonate
+            // 
+            this.grpImpersonate.Controls.Add(this.cmbImpersonate);
+            this.grpImpersonate.Enabled = false;
+            this.grpImpersonate.Location = new System.Drawing.Point(13, 357);
+            this.grpImpersonate.Name = "grpImpersonate";
+            this.grpImpersonate.Size = new System.Drawing.Size(417, 77);
+            this.grpImpersonate.TabIndex = 0;
+            this.grpImpersonate.TabStop = false;
+            // 
+            // cmbImpersonate
+            // 
+            this.cmbImpersonate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbImpersonate.FormattingEnabled = true;
+            this.cmbImpersonate.Items.AddRange(new object[] {
+            "Chrome-100",
+            "Chrome-101",
+            "Chrome-104",
+            "Chrome-107",
+            "Chrome-110",
+            "Chrome-116",
+            "Chrome-119",
+            "Chrome-120",
+            "Chrome-123",
+            "Chrome-124",
+            "Chrome-131",
+            "Chrome-131",
+            "Chrome-133",
+            "Chrome-136",
+            "Chrome-99",
+            "Chrome-99",
+            "Edge-101",
+            "Edge-99",
+            "Firefox-133",
+            "Firefox-135",
+            "Safari-15.3",
+            "Safari-15.5",
+            "Safari-17.0",
+            "Safari-17.2",
+            "Safari-18.0",
+            "Safari-18.0",
+            "Safari-18.4",
+            "Safari-18.4",
+            "Safari-26.0",
+            "Safari-26.0",
+            "Tor-14.5"});
+            this.cmbImpersonate.Location = new System.Drawing.Point(27, 30);
+            this.cmbImpersonate.Name = "cmbImpersonate";
+            this.cmbImpersonate.Size = new System.Drawing.Size(141, 23);
+            this.cmbImpersonate.TabIndex = 1;
+            // 
+            // chkImpersonate
+            // 
+            this.chkImpersonate.AutoSize = true;
+            this.chkImpersonate.Location = new System.Drawing.Point(29, 357);
+            this.chkImpersonate.Name = "chkImpersonate";
+            this.chkImpersonate.Size = new System.Drawing.Size(103, 19);
+            this.chkImpersonate.TabIndex = 0;
+            this.chkImpersonate.Text = "impersonate";
+            this.chkImpersonate.UseVisualStyleBackColor = true;
+            this.chkImpersonate.CheckedChanged += new System.EventHandler(this.chkImpersonate_CheckedChanged);
+            // 
             // frmDLP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(450, 409);
+            this.ClientSize = new System.Drawing.Size(450, 493);
             this.Controls.Add(this.chkList);
             this.Controls.Add(this.grpVideo);
             this.Controls.Add(this.chkAudio);
@@ -208,6 +274,8 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lst);
+            this.Controls.Add(this.chkImpersonate);
+            this.Controls.Add(this.grpImpersonate);
             this.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -217,6 +285,7 @@
             this.Text = "Download media with yt-dlp";
             this.grpVideo.ResumeLayout(false);
             this.grpVideo.PerformLayout();
+            this.grpImpersonate.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -237,5 +306,8 @@
         private System.Windows.Forms.RadioButton chkPassthrough;
         private System.Windows.Forms.CheckBox chkBestAudio;
         private System.Windows.Forms.RadioButton chkList;
+        private System.Windows.Forms.GroupBox grpImpersonate;
+        private System.Windows.Forms.ComboBox cmbImpersonate;
+        private System.Windows.Forms.CheckBox chkImpersonate;
     }
 }
