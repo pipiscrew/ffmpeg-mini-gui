@@ -20,7 +20,7 @@ namespace ffmpeg_mini_gui
 
             foreach (string file in filelist)
             {
-                if (file.ToLower().EndsWith(".mp4"))
+                if (file.ToLower().EndsWith(".mp4") || file.ToLower().EndsWith(".mkv"))
                     lst.Items.Add(file);
             }
 
