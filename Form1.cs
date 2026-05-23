@@ -20,10 +20,15 @@ namespace ffmpeg_mini_gui
             General.appStartPath = Application.StartupPath;
             General.ytdlp_x86 = General.appStartPath + "\\yt-dlp_x86.exe";
             General.ytdlp = General.appStartPath + "\\yt-dlp.exe";
+            General.ffprobe = General.appStartPath + "\\ffprobe.exe";
 
             //show hide yt-dlp options
             General.showYToptions = (File.Exists(General.ytdlp) || File.Exists(General.ytdlp_x86));
             ctxTools.Items.OfType<ToolStripItem>().Where(c => c.Name.StartsWith("btn_dlp")).ToList().ForEach(c => c.Visible = General.showYToptions);
+
+            //show hide ffprobe options
+            General.showPROBEoptions = File.Exists(General.ffprobe);
+            ctxTools.Items.OfType<ToolStripItem>().Where(c => c.Name.StartsWith("btn_probe")).ToList().ForEach(c => c.Visible = General.showPROBEoptions);
         }
 
         #region " TextBox DragDrop "
@@ -223,6 +228,12 @@ namespace ffmpeg_mini_gui
         }
 
 #endregion
+
+        private void btn_probe_find_bit_Click(object sender, EventArgs e)
+        {
+            frmProbe x = new frmProbe();
+            x.ShowDialog();
+        }
 
     }
 

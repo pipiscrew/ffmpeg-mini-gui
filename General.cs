@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,6 +23,9 @@ namespace ffmpeg_mini_gui
         internal static bool showYToptions;
         internal static  string ytdlp_x86;
         internal static  string ytdlp;
+
+        internal static bool showPROBEoptions;
+        internal static string ffprobe;
 
         public static Task ExecuteBatchFile(string batchFilePath)
         {
@@ -262,6 +266,86 @@ namespace ffmpeg_mini_gui
         {
             System.Diagnostics.Process.Start("explorer.exe", string.Format("/select,\"{0}\"", filePath));
         }
+
+        // 
+
+        public class ProcessOutput
+        {
+            public int ExitCode { get; set; }
+            public string StandardOutput { get; set; }
+            public string StandardError { get; set; }
+        }
+
+        public static async Task<ProcessOutput> ExecuteAndCaptureOutputAsync(string executablePath, string arguments = "")
+        {
+            var output = new ProcessOutput();
+
+            using (var process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = executablePath,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8
+                };
+
+                var outputBuilder = new StringBuilder();
+                var errorBuilder = new StringBuilder();
+
+                //AutoResetEvent is a thread synchronization primitive in .NET that allows threads to communicate with each other
+                using (var outputWaitHandle = new System.Threading.AutoResetEvent(false))
+                using (var errorWaitHandle = new System.Threading.AutoResetEvent(false))
+                {
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            outputWaitHandle.Set(); // Signal that output is complete
+                        }
+                        else
+                        {
+                            outputBuilder.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            errorWaitHandle.Set();
+                        }
+                        else
+                        {
+                            errorBuilder.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.Start();
+
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    await Task.Run(() => process.WaitForExit());
+
+                    outputWaitHandle.WaitOne(TimeSpan.FromSeconds(30));
+                    errorWaitHandle.WaitOne(TimeSpan.FromSeconds(30));
+
+                    output.ExitCode = process.ExitCode;
+                    // Wait for output and error handlers to finish
+                    output.StandardOutput = outputBuilder.ToString();
+                    output.StandardError = errorBuilder.ToString();
+                }
+            }
+
+            return output;
+        }
+
+        //
     }
 
 

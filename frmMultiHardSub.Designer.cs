@@ -79,8 +79,8 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(425, 34);
             this.label1.TabIndex = 3;
-            this.label1.Text = "The list accepts .mp4 files (via drag && drop). Assuming the .srt file is near th" +
-    "e video with the same filename.\r\n";
+            this.label1.Text = "The list accepts .mp4 or .mkv files (via drag && drop). Assuming the .srt file is" +
+    " near the video with the same filename.\r\n";
             // 
             // frmMultiHardSub
             // 
