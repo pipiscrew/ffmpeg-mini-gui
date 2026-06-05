@@ -26,3 +26,4 @@ alternative :
 * [HandBrake](https://handbrake.fr/)
 * [Shutter Encoder](https://www.shutterencoder.com/)
 * [Shotcut](https://www.shotcut.org/)
+* [ffmpeg WebCLI](https://github.com/tejaswigowda/ffmpeg-webCLI) - Full FFmpeg in Browser, Offline PWA, No Uploads (WASM)
